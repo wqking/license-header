@@ -30,6 +30,9 @@ The action can be `update` or `remove`.
 If the action is `update`, it will add the license to the source files if it's not there, or update the license if the license is already there.  
 If the action is `remove`, it will remove the license from the source files.  
 
+The tool matches license text with the source code using fuzzy matching algorithm. If the license is modified slightly, such as changing the license year, the tool can detect the license block in the source code correctly. But if the license is going to be changed a lot, you'd better remove the old license from the source code, then edit the license, then add the license back to the source code.  
+Note: be sure to backup your source code files before using the tool.
+
 #### --source SOURCE, required
 
 SOURCE is the file pattern of the source files, the pattern can include wildcard `*`, and may include `**` to indicate recursive folders.  
