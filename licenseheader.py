@@ -22,10 +22,16 @@ class Application :
 			self._doRun()
 		except Exception as e:
 			traceback.print_exc()
+			
+	def _unescapeText(self, text) :
+		if text is None :
+			return text;
+		text = text.replace("\\n", "\n")
+		return text
 
 	def _doRun(self) :
-		self._before = self._before.replace("\\n", "\n")
-		self._after = self._after.replace("\\n", "\n")
+		self._before = self._unescapeText(self._before)
+		self._after = self._unescapeText(self._after)
 
 		with open(self._licenseFile, 'r') as f :
 			licenseLines = f.readlines()
@@ -39,15 +45,15 @@ class Application :
 		if lastEmptyLineIndex < len(licenseLines) :
 			licenseLines = licenseLines[0 : lastEmptyLineIndex]
 		self._licenseLines = []
-		if self._before != '' :
+		if self._before is not None :
 			self._licenseLines.append(self._before + "\n")
 		for line in licenseLines :
-			if self._lineBefore != '' :
+			if self._lineBefore is not None :
 				line = self._lineBefore + line
-			if self._lineAfter != '' :
+			if self._lineAfter is not None :
 				line = line + self._lineAfter
 			self._licenseLines.append(line)
-		if self._after != '' :
+		if self._after is not None :
 			self._licenseLines.append(self._after + "\n")
 
 		for sourcePattern in self._sourcePatterns :
@@ -137,10 +143,10 @@ class Application :
 		parser.add_argument('action', help = "The action, can be update or remove", default = 'update', choices = [ 'update', 'remove' ])
 		parser.add_argument('--source', action = 'append', required = True, help = "The source file patterns, can have path and wildcard")
 		parser.add_argument('--license', required = True, help = "The license file location")
-		parser.add_argument('--before', required = False, help = "The text added before the license block", default = '')
-		parser.add_argument('--after', required = False, help = "The text added after the license block", default = '')
-		parser.add_argument('--line-before', required = False, help = "The text added before each line", default = '')
-		parser.add_argument('--line-after', required = False, help = "The text added after each line", default = '')
+		parser.add_argument('--before', required = False, help = "The text added before the license block", default = None)
+		parser.add_argument('--after', required = False, help = "The text added after the license block", default = None)
+		parser.add_argument('--line-before', required = False, help = "The text added before each line", default = None)
+		parser.add_argument('--line-after', required = False, help = "The text added after each line", default = None)
 		parser.add_argument('--exclude', action = 'append', required = False, help = "The patterns to exclude, can not have wildcard")
 
 		options = parser.parse_args(commandLineArguments)
